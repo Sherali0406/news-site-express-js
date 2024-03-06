@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 
 const {
   getPosts,
@@ -9,14 +8,21 @@ const {
   deletePost,
 } = require("../controllers/posts");
 
-const Post = require("../models/Post");
+const Post=require("../models/Post");
+
+const router = express.Router();
+
 const advancedResults = require("../middleware/advancedResults");
 const { protect, authorize } = require("../middleware/auth");
+
+
+router.use(protect);
+router.use(authorize("admin", "modifier", "editor"));
 
 router
   .route("/")
   .get(advancedResults(Post), getPosts)
-  .post(protect, authorize("admin", "modifier"), createPost);
+  .post(protect, authorize("admin", "editor"), createPost);
 
 router
   .route("/:id")

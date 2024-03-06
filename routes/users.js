@@ -14,17 +14,14 @@ const router = express.Router({ mergeParams: true });
 const advancedResults = require("../middleware/advancedResults");
 const { protect, authorize } = require("../middleware/auth");
 
+// Use protect middleware globally
 router.use(protect);
-router.use(authorize("admin"));
 
-router
-  .route("/")
-  .get(protect, authorize("admin"), advancedResults(User), getUsers)
-  .post(createUser);
-router
-  .route("/:id")
-  .get(protect, getUser)
-  .put(updateUser)
-  .delete(protect, authorize("admin", "modifier"), deleteUser);
+// Use authorize middleware with roles "admin" and "modifier" globally
+router.use(authorize("admin", "modifier", "editor"));
+
+router.route("/").get(getUsers).post(createUser);
+
+router.route("/:id").get(getUser).put(updateUser).delete(deleteUser);
 
 module.exports = router;

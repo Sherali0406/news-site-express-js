@@ -26,7 +26,31 @@ exports.getUser = asyncHandler(async (req, res, next) => {
 });
 
 exports.createUser = asyncHandler(async (req, res, next) => {
-  const user = await User.create(req.body);
+  let allowedRoles = ["editor"];
+
+  if (req.user.role === "admin") {
+    allowedRoles.push("admin", "modifier");
+  } else if (req.user.role === "modifier") {
+    return res.status(403).json({
+      success: false,
+      error: "Users with 'modifier' role are not allowed to create users.",
+    });
+  }
+
+  if (!allowedRoles.includes(req.body.role)) {
+    return res.status(400).json({
+      success: false,
+      error: "Invalid role provided",
+    });
+  }
+
+  const user = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+    password: req.body.password,
+    loggedIn: req.body.loggedIn,
+  });
 
   res.status(201).json({
     success: true,
@@ -39,7 +63,7 @@ exports.updateUser = asyncHandler(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
-  
+
   if (!user) {
     return next(new ErrorResponse(`user not found id ${req.params.id}`));
   }
