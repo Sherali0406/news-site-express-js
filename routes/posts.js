@@ -29,12 +29,11 @@ router
 
 router
   .route("/")
-  .get(advancedResults(Post, "category tag"), getPosts)
+  .get(advancedResults(Post, ["categories", "tags", "comments"]), getPosts)
   .post(protect, authorize("admin", "modifier"), createPost);
-
 router
   .route("/:id")
-  .get(protect,authorize("admin","modifier","editor"),getPost)
+  .get(protect, authorize("admin", "modifier", "editor"), getPost)
   .put(protect, authorize("admin", "modifier"), updatePost)
   .delete(protect, authorize("admin", "modifier"), deletePost);
 

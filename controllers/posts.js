@@ -7,7 +7,7 @@ const path = require("path");
 
 exports.createPost = asyncHandler(async (req, res, next) => {
   req.body.user = req.user.id;
- 
+
   const publishedPost = await Post.findOne({ user: req.user.id });
 
   if (publishedPost && req.user.role !== "admin") {
@@ -24,9 +24,9 @@ exports.createPost = asyncHandler(async (req, res, next) => {
 });
 
 exports.getPosts = asyncHandler(async (req, res, next) => {
-  const posts = await Post.find({}).populate("categories tags comments");
-
-  res.status(200).json({ success: true, data: posts });
+  // const posts = await Post.find({}).populate("comments categories tags");
+  // res.status(200).json({ success: true, data: posts });
+  res.status(200).json(res.advancedResults);
 });
 
 exports.getPost = asyncHandler(async (req, res, next) => {
@@ -96,7 +96,7 @@ exports.deletePost = asyncHandler(async (req, res, next) => {
 });
 
 exports.postPhotoUpload = asyncHandler(async (req, res, next) => {
-  // console.log(req.files); 
+  // console.log(req.files);
 
   const post = await Post.findById(req.params.id);
 

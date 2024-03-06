@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
@@ -16,7 +17,9 @@ const tags = require("./routes/tags");
 const comments = require("./routes/comments");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
-const swaggerRouter = require("./routes/swagger"); // Import the Swagger router
+const options = require("./routes/swagger");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 const app = express();
 
@@ -30,9 +33,6 @@ app.use(fileupload());
 
 app.use(express.static(path.join(__dirname, "public")));
 
-// Enable CORS (if needed)
-// app.use(cors());
-
 app.use("/tags", tags);
 app.use("/categories", categories);
 app.use("/posts", posts);
@@ -40,14 +40,15 @@ app.use("/comments", comments);
 app.use("/users", users);
 app.use("/auth", auth);
 
-// Mount the Swagger router
-app.use("/", swaggerRouter);
-
 const PORT = process.env.PORT || 5000;
+
+const specs = swaggerJSDoc(options);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 const server = app.listen(
   PORT,
   console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow.bold
+    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow
+      .bgYellow
   )
 );

@@ -5,8 +5,9 @@ const User = require("../models/User");
 const Post = require("../models/Post");
 
 exports.getComments = asyncHandler(async (req, res, next) => {
-  const comment = await Comment.find();
-  res.status(200).json({ success: true, data: comment });
+  // const comment = await Comment.find();
+  // res.status(200).json({ success: true, data: comment });
+  res.status(200).json(res.advancedResults);
 });
 
 exports.getComment = asyncHandler(async (req, res, next) => {
@@ -21,26 +22,22 @@ exports.getComment = asyncHandler(async (req, res, next) => {
 
 exports.createComment = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.user.id);
+  req.body.user = req.user.id;
 
   if (user && user.loggedIn === "fb") {
-    const { comment } = req.body; 
+    const { comment, user } = req.body;
     const postId = req.params.postId;
-
     const post = await Post.findById(postId);
     if (!post) {
       return next(new ErrorResponse(`Post not found with id ${postId}`, 404));
     }
-    
-    // Create a new comment and associate it with the post
     const newComment = await Comment.create({
       comment,
-      user: req.user.id,
+      user,
       post: postId,
     });
-
     post.comments.push(newComment._id);
     await post.save();
-
     res.status(201).json({ success: true, data: newComment });
   } else {
     return next(

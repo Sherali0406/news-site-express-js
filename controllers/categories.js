@@ -10,7 +10,7 @@ exports.getCategories = asyncHandler(async (req, res, next) => {
 exports.getCategory = asyncHandler(async (req, res, next) => {
   const category = await Category.findById(req.params.id).populate({
     path: "post",
-    select: "title content", 
+    select: "title content",
   });
   if (!category) {
     return next(
@@ -21,18 +21,17 @@ exports.getCategory = asyncHandler(async (req, res, next) => {
 });
 
 exports.addCategory = asyncHandler(async (req, res, next) => {
-  req.body.post = req.params.postId;
+  const { name, description, user } = req.body;
+  req.body.user = req.user.id;
 
-  const post = await Post.findById(req.params.postId);
-
+  const postId = req.params.postId;
+  const post = await Post.findById(postId);
   if (!post) {
-    return next(
-      new ErrorResponse("no post with the id of ${req.params.postId}"),
-      404
-    );
+    return next(new ErrorResponse(`Post not found with id ${postId}`, 404));
   }
 
   if (post.user.toString() !== req.user.id && req.user.role !== "admin") {
+    console.log("65e4a692819e5c61295cf9a2");
     return next(
       new ErrorResponse(
         `User ${req.user.id} is not authorized to add a category to post ${post._id}`,
@@ -40,9 +39,15 @@ exports.addCategory = asyncHandler(async (req, res, next) => {
       )
     );
   }
-
-  const category = await Category.create(req.body);
-  res.status(201).json({ success: true, data: category });
+  const newCategory = await Category.create({
+    name,
+    description,
+    user,
+    post: postId,
+  });
+  post.categories.push(newCategory._id);
+  await post.save();
+  res.status(201).json({ success: true, data: newCategory });
 });
 
 exports.updateCategory = asyncHandler(async (req, res, next) => {

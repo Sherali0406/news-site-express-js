@@ -19,12 +19,12 @@ router.use(authorize("admin"));
 
 router
   .route("/")
-  .get(protect, advancedResults(User), getUsers)
+  .get(protect, authorize("admin"), advancedResults(User), getUsers)
   .post(createUser);
 router
   .route("/:id")
   .get(protect, getUser)
   .put(updateUser)
-  .delete(protect, authorize("admin","modifier"),deleteUser);
+  .delete(protect, authorize("admin", "modifier"), deleteUser);
 
 module.exports = router;

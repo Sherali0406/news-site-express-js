@@ -19,8 +19,8 @@ exports.getTag = asyncHandler(async (req, res, next) => {
 });
 
 exports.addTag = asyncHandler(async (req, res, next) => {
-  req.body.post = req.params.postId; 
-  // req.body.user = req.user.id;
+  req.body.post = req.params.postId;
+  req.body.user = req.user.id;
   const post = await Post.findById(req.params.postId);
 
   if (!post) {
@@ -50,14 +50,14 @@ exports.updateTag = asyncHandler(async (req, res, next) => {
     );
   }
 
-  if (tag.user.toString() !== req.user.id && req.user.role !== "admin") {
-    return next(
-      new ErrorResponse(
-        `User ${req.user.id} is not authorized to update tag ${tag._id}`,
-        401
-      )
-    );
-  }
+  // if (tag.user.toString() !== req.user.id && req.user.role !== "admin") {
+  //   return next(
+  //     new ErrorResponse(
+  //       `User ${req.user.id} is not authorized to update tag ${tag._id}`,
+  //       401
+  //     )
+  //   );
+  // }
 
   tag = await Tag.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
@@ -76,14 +76,14 @@ exports.deleteTag = asyncHandler(async (req, res, next) => {
   }
 
   // Make sure user is tag owner
-  if (tag.user.toString() !== req.user.id && req.user.role !== "admin") {
-    return next(
-      new ErrorResponse(
-        `User ${req.user.id} is not authorized to delete tag ${tag._id}`,
-        401
-      )
-    );
-  }
+  // if (tag.user.toString() !== req.user.id && req.user.role !== "admin") {
+  //   return next(
+  //     new ErrorResponse(
+  //       `User ${req.user.id} is not authorized to delete tag ${tag._id}`,
+  //       401
+  //     )
+  //   );
+  // }
   tag = await Tag.findByIdAndDelete(req.params.id);
 
   res.status(200).json({ success: true, data: {} });

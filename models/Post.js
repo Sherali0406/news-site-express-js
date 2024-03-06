@@ -34,21 +34,25 @@ const PostSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    user: {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    category: {
-      type: mongoose.Schema.ObjectId,
-      ref: "Category",
-      required: false,
-    },
+    user: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
+    categories: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Category",
+        required: false,
+      },
+    ],
     tag: {
       type: mongoose.Schema.ObjectId,
       ref: "Tag",
       required: false,
     },
+
     comments: [
       {
         type: mongoose.Schema.ObjectId,
@@ -65,13 +69,6 @@ const PostSchema = new mongoose.Schema(
 PostSchema.pre("save", function (next) {
   this.slug = slugify(this.title, { lower: true });
   next();
-});
-
-PostSchema.virtual("categories", {
-  ref: "Category",
-  localField: "_id",
-  foreignField: "post",
-  justOne: false,
 });
 
 PostSchema.virtual("tags", {

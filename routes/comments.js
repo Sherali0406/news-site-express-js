@@ -11,12 +11,15 @@ const Comment = require("../models/Comment");
 
 const router = express.Router({ mergeParams: true }); // Add mergeParams option
 
-// Import middleware for authentication
+// Import middlewares
+const advancedResults = require("../middleware/advancedResults");
 const { protect } = require("../middleware/auth");
 
+router
+  .route("/")
+  .get(advancedResults(Comment), getComments)
+  .post(protect, createComment);
 
-
-router.route("/").get(getComments).post(protect, createComment);
 router
   .route("/:id")
   .get(getComment)
