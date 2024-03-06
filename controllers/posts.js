@@ -36,16 +36,8 @@ exports.createPost = asyncHandler(async (req, res, next) => {
     req.body.photo = file.name;
   }
 
-  // Check user role
-  if (req.user.role === "admin") {
-    const post = await Post.create(req.body);
-    res.status(201).json({ success: true, data: post });
-  } else {
-    res.status(404).json({
-      success: false,
-      message: "Your role must be admin",
-    });
-  }
+  const post = await Post.create(req.body);
+  res.status(201).json({ success: true, data: post });
 });
 
 exports.getPosts = asyncHandler(async (req, res, next) => {

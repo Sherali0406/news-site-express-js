@@ -58,7 +58,6 @@ PostSchema.pre("save", function (next) {
   next();
 });
 
-// Create the model using mongoose.model, applying the plugin
 const Post = mongoose.model("Post", PostSchema);
 
 module.exports = Post;

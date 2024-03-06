@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please add a name"],
   },
+
   email: {
     type: String,
     required: [true, "Please add an email"],
@@ -23,12 +24,14 @@ const UserSchema = new mongoose.Schema({
     enum: ["admin", "modifier", "editor"],
     default: "editor",
   },
+
   password: {
     type: String,
     required: [true, "Please add a password"],
     minlength: 3,
     select: false,
   },
+
   loggedIn: {
     type: String,
     required: [true, "please add a logged way(vk,facebook,twitter,instagram)"],
@@ -79,7 +82,6 @@ UserSchema.methods.getResetPasswordToken = function () {
 
   // Set expire
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
-
   return resetToken;
 };
 

@@ -15,12 +15,12 @@ const { protect, authorize } = require("../middleware/auth");
 
 router
   .route("/")
-  .get(advancedResults(Post), getPosts) // Update to use getPosts controller
+  .get(advancedResults(Post), getPosts)
   .post(protect, authorize("admin", "modifier"), createPost);
 
 router
   .route("/:id")
-  .get(protect, authorize("admin", "modifier", "editor"), getPost)
+  .get(protect, getPost)
   .put(protect, authorize("admin", "modifier"), updatePost)
   .delete(protect, authorize("admin", "modifier"), deletePost);
 
