@@ -1,9 +1,17 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 exports.getUsers = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedResults);
+  const { page = 1, limit = 10 } = req.query;
+
+  const options = {
+    page: parseInt(page, 10),
+    limit: parseInt(limit, 10),
+  };
+  const results = await User.paginate({}, options);
+  res.status(200).json(results);
 });
 
 exports.getUser = asyncHandler(async (req, res, next) => {

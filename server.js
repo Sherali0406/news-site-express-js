@@ -7,7 +7,6 @@ const colors = require("colors");
 const path = require("path");
 const fileupload = require("express-fileupload");
 dotenv.config({ path: "./config/config.env" });
-const cors = require("cors");
 
 connectDB();
 

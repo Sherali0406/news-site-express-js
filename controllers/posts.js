@@ -55,9 +55,7 @@ exports.getPosts = asyncHandler(async (req, res, next) => {
     page: parseInt(page, 10),
     limit: parseInt(limit, 10),
   };
-
   const results = await Post.paginate({}, options);
-
   res.status(200).json(results);
 });
 
@@ -121,6 +119,5 @@ exports.deletePost = asyncHandler(async (req, res, next) => {
     );
   }
   post = await Post.findByIdAndDelete(req.params.id);
-
   res.status(200).json({ success: true, data: {} });
 });
