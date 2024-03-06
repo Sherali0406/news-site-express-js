@@ -1,36 +1,23 @@
 const express = require("express");
+const router = express.Router();
+
 const {
   getPosts,
   getPost,
   createPost,
   updatePost,
   deletePost,
-  postPhotoUpload,
 } = require("../controllers/posts");
 
 const Post = require("../models/Post");
-
-const categoryRouter = require("./categories");
-const tagRouter = require("./tags");
-const commentRouter = require("./comments");
-
-const router = express.Router();
-
 const advancedResults = require("../middleware/advancedResults");
 const { protect, authorize } = require("../middleware/auth");
 
-router.use("/:postId/categories", categoryRouter);
-router.use("/:postId/tags", tagRouter);
-router.use("/:postId/comments", commentRouter);
-
-router
-  .route("/:id/photo")
-  .put(protect, authorize("modifier", "admin"), postPhotoUpload);
-
 router
   .route("/")
-  .get(advancedResults(Post, ["categories", "tags", "comments"]), getPosts)
+  .get(advancedResults(Post), getPosts) // Update to use getPosts controller
   .post(protect, authorize("admin", "modifier"), createPost);
+
 router
   .route("/:id")
   .get(protect, authorize("admin", "modifier", "editor"), getPost)
